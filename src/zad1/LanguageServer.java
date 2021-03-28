@@ -19,11 +19,6 @@ public class LanguageServer {
     private static final String info = " SERVER LANG :";
     static TranslatingRequest tr = null;
 
-
-
-
-
-
         public void startServer() throws IOException, ClassNotFoundException {
             InetAddress host = InetAddress.getLocalHost();
 
@@ -37,11 +32,11 @@ public class LanguageServer {
 
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             tr = (TranslatingRequest) ois.readObject();
-            tr.setWordToTranslate("i changed the word");
+            tr.setWordToTranslate("i changed the word + chekc diff " + String.valueOf(Math.random()+1));
             ois.close();
 
 
-            Translated translated = new Translated("i passing data", port);
+            Translated translated = new Translated(tr.getWordToTranslate(), port);
             System.out.println(info + " sendinfg data to " + 5355 + " port ");
 
 
@@ -53,6 +48,9 @@ public class LanguageServer {
             oos.writeObject(translated);
             oos.close( );
             returnInfo.close();
+            serverSocket.close();
+
+
             System.out.println(info + " : data sended");
 
             if(returnInfo.isBound()) {

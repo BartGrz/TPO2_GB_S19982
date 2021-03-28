@@ -7,6 +7,7 @@ import zad1.loaders.TranslatingRequest;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -25,10 +26,9 @@ public class MainServer {
         InetAddress host = InetAddress.getLocalHost();
 
 
-
         while (true) {
 
-            System.out.println(info + "waiting for Client request");
+            System.out.println(info + "waiting for Client request on port " + port);
             serverSocket = new ServerSocket(port);
             Socket socket = serverSocket.accept();
 
@@ -49,7 +49,7 @@ public class MainServer {
                     }
                 });
                 serverThread.start();
-                System.out.println(info+" data received on " + port + " port");
+                System.out.println(info + " data received on " + port + " port");
                 Socket socketLang = new Socket(host.getHostName(), newPort);
 
                 System.out.println(info + "data sended on " + newPort + " port");
@@ -58,45 +58,54 @@ public class MainServer {
                 oos.writeObject(tr);
                 oos.close();
                 ois.close();
-
+                // socket.close();
             }
-            break;
-        }
+            // break;
+
 
 //czekanie na objekt od lang server
-        while (true) {
+            // while (true) {
+            while (true) {
+                try {
 
-            serverSocketReceived = new ServerSocket(5355);
 
-            System.out.println(info + " awaiting data on " + 5355 + " port ");
+                serverSocketReceived = new ServerSocket(5355);
+                }catch (BindException e) {
+                    System.out.println(info + " ERROR, BIND EXC ");
+                }
+                System.out.println(info + " awaiting data on " + 5355 + " port ");
 
-            Socket socketReceived = serverSocketReceived.accept();
-            if (socketReceived.isBound()) {
-                ObjectInputStream oiss = new ObjectInputStream(socketReceived.getInputStream());
-                tran = (Translated) oiss.readObject();
+                Socket socketReceived = serverSocketReceived.accept();
+                if (socketReceived.isBound()) {
+                    ObjectInputStream oiss = new ObjectInputStream(socketReceived.getInputStream());
+                    tran = (Translated) oiss.readObject();
 
-                System.out.println(info + " I received from lang server " + tran.getTranslatedWord());
+                    System.out.println(info + " I received from lang server " + tran.getTranslatedWord());
 
-                oiss.close();
-                break;
-            }
+                    oiss.close();
+                    // break;
+                }
 
-        }
+                //  }
 //wysylanie zwroconego z lang server objektu
-        while (true) {
-            Socket socketReturnData = new Socket(host.getHostName(), 54926);
-            System.out.println(info + " sendiung data to client on port : " + socketReturnData.getPort());
-            ObjectOutputStream oos = new ObjectOutputStream(socketReturnData.getOutputStream());
+                // while (true) {
+                Socket socketReturnData = new Socket(host.getHostName(), 54926);
+                System.out.println(info + " sendiung data to client on port : " + socketReturnData.getPort());
+                ObjectOutputStream oos = new ObjectOutputStream(socketReturnData.getOutputStream());
 
 
-            oos.writeObject(tran);
-            oos.close();
-            socketReturnData.close();
+                oos.writeObject(tran);
+                oos.close();
+                socketReturnData.close();
+                System.out.println(info +" data send ");
 
-            if (socketReturnData.isBound()) {
-                break;
+                if (socketReturnData.isBound()) {
+                    serverSocket.close();
+                    break;
+
+                }
+
             }
         }
     }
-
 }

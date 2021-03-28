@@ -6,15 +6,13 @@ import zad1.loaders.Translated;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.Scanner;
 
 public class Client {
 
     private static ServerSocket serverSocketReceived;
+    public static final String info = "CLIENT : ";
 
 
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException {
@@ -44,7 +42,12 @@ public class Client {
 
 
 //oczekuje na informacje zwrotna od serwera glownego
-            serverSocketReceived = new ServerSocket(54926);
+            try {
+                serverSocketReceived = new ServerSocket(54926);
+            }catch (BindException e) {
+                System.out.println(info + " ERROR ,EXC BIND");
+            }
+
             Socket socketReceived = serverSocketReceived.accept();
             //   if (socketReceived.isBound()) {
             ObjectInputStream oiss = new ObjectInputStream(socketReceived.getInputStream());
@@ -52,12 +55,13 @@ public class Client {
             System.out.println(" Data received from main server: " + translated.getTranslatedWord());
 
 
-            socketReceived.close();
+           // socketReceived.close();
 
 
             if (socketReceived.isBound()) {
                 socketReceived.close();
-                break;
+                socket.close();
+              //  break;
             }
 
         }
