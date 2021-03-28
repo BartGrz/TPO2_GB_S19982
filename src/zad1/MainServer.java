@@ -20,7 +20,7 @@ public class MainServer {
     private static int port = 9876;
     public static int newPort = 53343;
     private static final String info = " SERVER MAIN :";
-    private static  Translated tran ;
+    private static Translated tran;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         InetAddress host = InetAddress.getLocalHost();
@@ -29,7 +29,13 @@ public class MainServer {
         while (true) {
 
             System.out.println(info + "waiting for Client request on port " + port);
-            serverSocket = new ServerSocket(port);
+            try {
+                serverSocket = new ServerSocket(port);
+            } catch (BindException e) {
+
+            }
+
+
             Socket socket = serverSocket.accept();
 
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
@@ -59,52 +65,62 @@ public class MainServer {
                 oos.close();
                 ois.close();
                 // socket.close();
-            }
-            // break;
+
+                // break;
 
 
 //czekanie na objekt od lang server
-            // while (true) {
-            while (true) {
-                try {
-
-
-                serverSocketReceived = new ServerSocket(5355);
-                }catch (BindException e) {
-                    System.out.println(info + " ERROR, BIND EXC ");
-                }
-                System.out.println(info + " awaiting data on " + 5355 + " port ");
-
-                Socket socketReceived = serverSocketReceived.accept();
-                if (socketReceived.isBound()) {
-                    ObjectInputStream oiss = new ObjectInputStream(socketReceived.getInputStream());
-                    tran = (Translated) oiss.readObject();
-
-                    System.out.println(info + " I received from lang server " + tran.getTranslatedWord());
-
-                    oiss.close();
-                    // break;
-                }
-
-                //  }
-//wysylanie zwroconego z lang server objektu
                 // while (true) {
-                Socket socketReturnData = new Socket(host.getHostName(), 54926);
-                System.out.println(info + " sendiung data to client on port : " + socketReturnData.getPort());
-                ObjectOutputStream oos = new ObjectOutputStream(socketReturnData.getOutputStream());
+                while (true) {
+                    try {
 
+                        serverSocketReceived = new ServerSocket(5355);
+                    } catch (BindException e) {
+                        System.out.println(info + " ERROR, BIND EXC ");
+                    }
+                    System.out.println(info + " awaiting data on " + 5355 + " port ");
 
-                oos.writeObject(tran);
-                oos.close();
-                socketReturnData.close();
-                System.out.println(info +" data send ");
+                    Socket socketReceived = serverSocketReceived.accept();
+                    if (socketReceived.isBound()) {
+                        ObjectInputStream oiss = new ObjectInputStream(socketReceived.getInputStream());
+                        tran = (Translated) oiss.readObject();
 
-                if (socketReturnData.isBound()) {
-                    serverSocket.close();
-                    break;
+                        System.out.println(info + " I received from lang server " + tran.getTranslatedWord());
+
+                        oiss.close();
+
+                    }
+//wysylanie zwroconego z lang server objektu
+
+                    Socket socketReturnData = new Socket(host.getHostName(), cr.getPort());
+                    System.out.println(info + " sendiung data to client on port : " + socketReturnData.getPort());
+                    oos = new ObjectOutputStream(socketReturnData.getOutputStream());
+
+                    oos.writeObject(tran.getTranslatedWord());
+                    oos.close();
+                    socketReturnData.close();
+                    System.out.println(info + " data send ");
+
+                    if (socketReturnData.isBound()) {
+                        serverSocket.close();
+                        break;
+
+                    }
+
 
                 }
 
+            } else {
+
+
+                Socket socket_returnData = new Socket(host.getHostName(), cr.getPort());
+                System.out.println(info + "I do not recognize language code , sending data to client  " + socket_returnData.getPort());
+                ObjectOutputStream objos = new ObjectOutputStream(socket_returnData.getOutputStream());
+                objos.writeObject("no data");
+                objos.close();
+
+                if (socket_returnData.isBound()) {
+                }
             }
         }
     }
