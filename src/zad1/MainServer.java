@@ -1,6 +1,7 @@
 package zad1;
 
 import zad1.loaders.ClientRequest;
+import zad1.loaders.DeLanguageServer;
 import zad1.loaders.Translated;
 import zad1.loaders.TranslatingRequest;
 
@@ -43,7 +44,8 @@ public class MainServer {
             cr = (ClientRequest) ois.readObject();
 
 //w zaleznosci od kodu kraju (w przyszlosci) powinien odpalic sie serwer na oczekujacy danych na danym porcie
-            if (cr.getLanguageCode().equals("fr")) {
+
+            if (cr.getLanguageCode().equals("eng")) {
 
                 Thread serverThread = new Thread(() -> {
                     try {
@@ -55,22 +57,46 @@ public class MainServer {
                     }
                 });
                 serverThread.start();
-                System.out.println(info + " data received on " + port + " port");
-                Socket socketLang = new Socket(host.getHostName(), newPort);
 
-                System.out.println(info + "data sended on " + newPort + " port");
-                TranslatingRequest tr = new TranslatingRequest(newPort, cr.getWordToTranslate(), cr.getHost().getAddress());
-                ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
-                oos.writeObject(tr);
-                oos.close();
-                ois.close();
-                // socket.close();
+            }else if (cr.getLanguageCode().equals("de")) {
 
-                // break;
+                final int port = cr.getPort();
+                final String code = cr.getLanguageCode();
 
+                Thread serverThread = new Thread(() -> {
+                    try {
+                        new DeLanguageServer().start(53343, code);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+                serverThread.start();
+            } else {
+
+
+                Socket socket_returnData = new Socket(host.getHostName(), cr.getPort());
+                System.out.println(info + "I do not recognize language code , sending data to client  " + socket_returnData.getPort());
+                ObjectOutputStream objos = new ObjectOutputStream(socket_returnData.getOutputStream());
+                objos.writeObject("no data");
+                objos.close();
+
+                if (socket_returnData.isBound()) {
+                }
+            }
+            System.out.println(info + " data received on " + port + " port");
+            Socket socketLang = new Socket(host.getHostName(), newPort);
+
+            System.out.println(info + "data sended on " + newPort + " port");
+            TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
+            ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
+            oos.writeObject(tr);
+            oos.close();
+            ois.close();
 
 //czekanie na objekt od lang server
-                // while (true) {
+
                 while (true) {
                     try {
 
@@ -110,18 +136,9 @@ public class MainServer {
 
                 }
 
-            } else {
 
 
-                Socket socket_returnData = new Socket(host.getHostName(), cr.getPort());
-                System.out.println(info + "I do not recognize language code , sending data to client  " + socket_returnData.getPort());
-                ObjectOutputStream objos = new ObjectOutputStream(socket_returnData.getOutputStream());
-                objos.writeObject("no data");
-                objos.close();
 
-                if (socket_returnData.isBound()) {
-                }
-            }
         }
     }
 }

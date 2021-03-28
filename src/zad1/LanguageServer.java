@@ -3,13 +3,12 @@ package zad1;
 import zad1.loaders.Translated;
 import zad1.loaders.TranslatingRequest;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Properties;
 
 public class LanguageServer {
 
@@ -20,6 +19,7 @@ public class LanguageServer {
     static TranslatingRequest tr = null;
 
     public void startServer() throws IOException, ClassNotFoundException {
+
         InetAddress host = InetAddress.getLocalHost();
 
         System.out.println(info + " awaiting data on " + port + " port ");
@@ -32,7 +32,11 @@ public class LanguageServer {
 
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
         tr = (TranslatingRequest) ois.readObject();
-        tr.setWordToTranslate("i changed the word + chekc diff " + String.valueOf(Math.random() + 1));
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("src/dictionary.properties"));
+       String translatedWord =  properties.getProperty(tr.getWordToTranslate());
+
+        tr.setWordToTranslate(translatedWord);
         ois.close();
 
 
@@ -55,7 +59,6 @@ public class LanguageServer {
 
             if (returnInfo.isBound()) {
 
-                // returnInfo.close();
                 break;
             }
         }

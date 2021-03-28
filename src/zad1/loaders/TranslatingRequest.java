@@ -41,6 +41,7 @@ public class TranslatingRequest implements Serializable {
 
     @Override
     public String toString() {
+
         return "TranslatingRequest{" +
                 "port=" + port +
                 ", wordToTranslate='" + wordToTranslate + '\'' +
