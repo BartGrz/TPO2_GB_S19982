@@ -1,7 +1,6 @@
 package zad1;
 
 import zad1.loaders.ClientRequest;
-import zad1.loaders.DeLanguageServer;
 import zad1.loaders.Translated;
 import zad1.loaders.TranslatingRequest;
 
@@ -42,14 +41,14 @@ public class MainServer {
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             ClientRequest cr = null;
             cr = (ClientRequest) ois.readObject();
-
+            System.out.println(info + " data received on " + port + " port");
 //w zaleznosci od kodu kraju (w przyszlosci) powinien odpalic sie serwer na oczekujacy danych na danym porcie
 
             if (cr.getLanguageCode().equals("eng")) {
-
+                final String code = cr.getLanguageCode();
                 Thread serverThread = new Thread(() -> {
                     try {
-                        new LanguageServer().startServer();
+                        new EngLanguageServer().start(newPort,code);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
@@ -60,12 +59,12 @@ public class MainServer {
 
             }else if (cr.getLanguageCode().equals("de")) {
 
-                final int port = cr.getPort();
+
                 final String code = cr.getLanguageCode();
 
                 Thread serverThread = new Thread(() -> {
                     try {
-                        new DeLanguageServer().start(53343, code);
+                        new DeLanguageServer().start(newPort, code);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
@@ -73,8 +72,8 @@ public class MainServer {
                     }
                 });
                 serverThread.start();
-            } else {
 
+            } else {
 
                 Socket socket_returnData = new Socket(host.getHostName(), cr.getPort());
                 System.out.println(info + "I do not recognize language code , sending data to client  " + socket_returnData.getPort());
@@ -85,7 +84,7 @@ public class MainServer {
                 if (socket_returnData.isBound()) {
                 }
             }
-            System.out.println(info + " data received on " + port + " port");
+
             Socket socketLang = new Socket(host.getHostName(), newPort);
 
             System.out.println(info + "data sended on " + newPort + " port");
@@ -95,6 +94,12 @@ public class MainServer {
             oos.close();
             ois.close();
 
+
+        }
+
+    }
+}
+    /*
 //czekanie na objekt od lang server
 
                 while (true) {
@@ -137,8 +142,4 @@ public class MainServer {
                 }
 
 
-
-
-        }
-    }
-}
+             */

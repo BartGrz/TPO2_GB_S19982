@@ -31,7 +31,6 @@ public class Client {
 
             socket = new Socket(host.getHostName(), 9876);
 
-            System.out.println(socket.getLocalPort());
             oos = new ObjectOutputStream(socket.getOutputStream());
 
             String clientMes = scanner.next();

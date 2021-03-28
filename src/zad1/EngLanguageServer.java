@@ -1,20 +1,33 @@
 package zad1;
 
-import zad1.loaders.Translated;
 import zad1.loaders.TranslatingRequest;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.Properties;
 
-public abstract class LanguageServer implements LanguageServerTemplate {
-    private  ServerSocket serverSocket;
-    private final String info = " SERVER LANG : ";
-    static TranslatingRequest tr = null;
+public class EngLanguageServer extends LanguageServer{
+
 
     @Override
-    public void start(int port,String langCode) throws IOException, ClassNotFoundException {
+    public String getWordFromDictionary(TranslatingRequest tr) throws IOException {
+
+
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("src/dictionary_eng.properties"));
+        String translatedWord =  properties.getProperty(tr.getWordToTranslate());
+
+        return translatedWord;
+    }
+}
+    /*
+    private static ServerSocket serverSocket;
+    private static int port = 53343;
+    private static int portSeend = 5355;
+    private static final String info = " SERVER LANG :";
+    static TranslatingRequest tr = null;
+
+    public void startServer() throws IOException, ClassNotFoundException {
+
         InetAddress host = InetAddress.getLocalHost();
 
         System.out.println(info + " awaiting data on " + port + " port ");
@@ -27,18 +40,20 @@ public abstract class LanguageServer implements LanguageServerTemplate {
 
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
         tr = (TranslatingRequest) ois.readObject();
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("src/dictionary.properties"));
+       String translatedWord =  properties.getProperty(tr.getWordToTranslate());
 
-
-        tr.setWordToTranslate(getWordFromDictionary(tr));
+        tr.setWordToTranslate(translatedWord);
         ois.close();
 
 
         Translated translated = new Translated(tr.getWordToTranslate(), port);
         System.out.println(info + " sendinfg data to " + tr.getPort() + " port ");
 
-//wysyla luamczenie do klienta
+
         while (true) {
-            Socket returnInfo = new Socket(host.getHostName(), tr.getPort() );
+            Socket returnInfo = new Socket(host.getHostName(), tr.getPort());
 
             ObjectOutputStream oos = new ObjectOutputStream(returnInfo.getOutputStream());
 
@@ -48,7 +63,7 @@ public abstract class LanguageServer implements LanguageServerTemplate {
             serverSocket.close();
 
 
-            System.out.println(info + " : data send, shuting down");
+            System.out.println(info + " : data send");
 
             if (returnInfo.isBound()) {
 
@@ -56,6 +71,5 @@ public abstract class LanguageServer implements LanguageServerTemplate {
             }
         }
     }
-    abstract public String getWordFromDictionary (TranslatingRequest tr) throws IOException;
-    }
 
+     */
