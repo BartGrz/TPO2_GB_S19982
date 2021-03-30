@@ -1,6 +1,6 @@
-package zad1;
+package zad1.languageServers;
 
-import zad1.loaders.TranslatingRequest;
+import zad1.holder.TranslatingRequest;
 
 import java.io.*;
 import java.util.Properties;

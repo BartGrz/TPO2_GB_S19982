@@ -1,7 +1,7 @@
-package zad1;
+package zad1.languageServers;
 
-import zad1.loaders.Translated;
-import zad1.loaders.TranslatingRequest;
+import zad1.holder.Translated;
+import zad1.holder.TranslatingRequest;
 
 import java.io.*;
 import java.net.BindException;
@@ -15,7 +15,7 @@ public abstract class LanguageServer implements LanguageServerTemplate {
     static TranslatingRequest tr = null;
 
     @Override
-    public void start(int port, String langCode) throws IOException, ClassNotFoundException {
+    public void start(int port ) throws IOException, ClassNotFoundException {
         InetAddress host = InetAddress.getLocalHost();
 
         System.out.println(info + " awaiting data on " + port + " port ");

@@ -1,8 +1,10 @@
-package zad1;
+package zad1.languageServers;
 
-import zad1.loaders.TranslatingRequest;
+import zad1.holder.TranslatingRequest;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 public class EsLanguageServer extends LanguageServer{
 
@@ -13,6 +15,10 @@ public class EsLanguageServer extends LanguageServer{
      */
     @Override
     public String getWordFromDictionary(TranslatingRequest tr) throws IOException {
-        return null;
+        Properties properties = new Properties();
+      properties.load(new FileInputStream("src/dictionary_es.properties"));
+      String translatedWord =  properties.getProperty(tr.getWordToTranslate());
+
+     return translatedWord;
     }
 }

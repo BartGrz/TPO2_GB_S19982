@@ -1,28 +1,20 @@
 package zad1;
 
 import javafx.application.Application;
-import javafx.application.HostServices;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.skin.ComboBoxPopupControl;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import zad1.loaders.AvailablePort;
-import zad1.loaders.ClientRequest;
-import zad1.loaders.GUIInfo;
-import zad1.loaders.Translated;
+import zad1.holder.ClientRequest;
+
 
 import java.io.*;
 import java.net.*;
-import java.util.ResourceBundle;
-import java.util.Scanner;
 
 public class Client extends Application   {
 
@@ -76,7 +68,7 @@ public class Client extends Application   {
                 socket.close();
 
             }
-//oczekuje na informacje zwrotna od serwera glownego
+//oczekuje na informacje zwrotna od serwera
 
                 try {
                     serverSocketReceived = new ServerSocket(cr.getPort());

@@ -1,12 +1,12 @@
-package zad1;
+package zad1.languageServers;
 
-import zad1.loaders.TranslatingRequest;
+import zad1.holder.TranslatingRequest;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class FrLanguageSrver extends LanguageServer  {
+public class FrLanguageServer extends LanguageServer  {
 
 
     /**
@@ -22,7 +22,7 @@ public class FrLanguageSrver extends LanguageServer  {
     public String getWordFromDictionary(TranslatingRequest tr) throws IOException {
 
         Properties properties = new Properties();
-      properties.load(new FileInputStream("src/dictionary_languageCode( example fr).properties"));
+      properties.load(new FileInputStream("src/dictionary_fr.properties"));
       String translatedWord =  properties.getProperty(tr.getWordToTranslate());
 
         return translatedWord;

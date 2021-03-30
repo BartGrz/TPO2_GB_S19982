@@ -1,14 +1,17 @@
 package zad1;
 
-import zad1.loaders.AvailablePort;
-import zad1.loaders.ClientRequest;
-import zad1.loaders.Translated;
-import zad1.loaders.TranslatingRequest;
+import zad1.holder.AvailablePort;
+import zad1.holder.ClientRequest;
+import zad1.holder.Translated;
+import zad1.holder.TranslatingRequest;
+import zad1.languageServers.DeLanguageServer;
+import zad1.languageServers.EngLanguageServer;
+import zad1.languageServers.EsLanguageServer;
+import zad1.languageServers.FrLanguageServer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -44,55 +47,70 @@ public class MainServer {
             ClientRequest cr = null;
             cr = (ClientRequest) ois.readObject();
             System.out.println(info + " data received on " + port + " port");
-//w zaleznosci od kodu kraju (w przyszlosci) powinien odpalic sie serwer na oczekujacy danych na danym porcie
+
 
             if (cr.getLanguageCode().equals("eng")) {
-                final String code = cr.getLanguageCode();
 
                 Thread serverThread = new Thread(() -> {
                     try {
 
-                        new EngLanguageServer().start(newPort,code);
+                        new EngLanguageServer().start(newPort);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 });
-                serverThread.start();
-                Socket socketLang = new Socket(host.getHostName(), newPort);
 
-                System.out.println(info + "data sended on " + newPort + " port");
-                TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
-                ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
-                oos.writeObject(tr);
-                oos.close();
-                ois.close();
+                serverThread.start();
+
+                sendToLangServ(cr,host.getHostName());
 
             }else if (cr.getLanguageCode().equals("de")) {
 
 
-                final String code = cr.getLanguageCode();
-
                 Thread serverThread = new Thread(() -> {
                     try {
-                        new DeLanguageServer().start(newPort, code);
+                        new DeLanguageServer().start(newPort);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 });
+
                 serverThread.start();
 
-                Socket socketLang = new Socket(host.getHostName(), newPort);
+                sendToLangServ(cr, host.getHostName());
 
-                System.out.println(info + "data sended on " + newPort + " port");
-                TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
-                ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
-                oos.writeObject(tr);
-                oos.close();
-                ois.close();
+            }  else if (cr.getLanguageCode().equals("es")) {
+                Thread serverThread = new Thread(() -> {
+                    try {
+                        new EsLanguageServer().start(newPort);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                serverThread.start();
+
+                sendToLangServ(cr, host.getHostName());
+
+            }else if(cr.getLanguageCode().equals("fr")) {
+                Thread serverThread = new Thread(() -> {
+                    try {
+                        new FrLanguageServer().start(newPort);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                serverThread.start();
+                sendToLangServ(cr, host.getHostName());
 
 
             } else {
@@ -111,6 +129,17 @@ public class MainServer {
 
         }
 
+    }
+
+    public static void sendToLangServ(ClientRequest cr, String hostName ) throws IOException {
+
+        Socket socketLang = new Socket(hostName, newPort);
+        System.out.println(info + "data sended on " + newPort + " port");
+        TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
+        ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
+        oos.writeObject(tr);
+        oos.close();
+       // ois.close();
     }
 }
     /*

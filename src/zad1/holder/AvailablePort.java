@@ -1,4 +1,4 @@
-package zad1.loaders;
+package zad1.holder;
 
 import java.io.IOException;
 import java.net.ServerSocket;
