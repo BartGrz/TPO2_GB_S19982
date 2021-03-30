@@ -16,6 +16,10 @@ public class DeLanguageServer extends LanguageServer {
         properties.load(new FileInputStream("src/dictionary_de.properties"));
         String translatedWord =  properties.getProperty(tr.getWordToTranslate());
 
+       // if(properties.getProperty(tr.getWordToTranslate())==null) {
+       //     return " word not found in dictionary";
+      //  }
+
         return translatedWord;
     }
 }

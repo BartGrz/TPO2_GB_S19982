@@ -1,5 +1,6 @@
 package zad1;
 
+import zad1.loaders.AvailablePort;
 import zad1.loaders.ClientRequest;
 import zad1.loaders.Translated;
 import zad1.loaders.TranslatingRequest;
@@ -7,6 +8,7 @@ import zad1.loaders.TranslatingRequest;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -18,7 +20,7 @@ public class MainServer {
     private static ServerSocket serverSocket;
     private static ServerSocket serverSocketReceived;
     private static int port = 9876;
-    public static int newPort = 53343;
+    public static int newPort = AvailablePort.findFreePort();
     private static final String info = " SERVER MAIN :";
     private static Translated tran;
 
@@ -28,13 +30,13 @@ public class MainServer {
 
         while (true) {
 
+
             System.out.println(info + "waiting for Client request on port " + port);
             try {
                 serverSocket = new ServerSocket(port);
             } catch (BindException e) {
 
             }
-
 
             Socket socket = serverSocket.accept();
 
@@ -46,8 +48,10 @@ public class MainServer {
 
             if (cr.getLanguageCode().equals("eng")) {
                 final String code = cr.getLanguageCode();
+
                 Thread serverThread = new Thread(() -> {
                     try {
+
                         new EngLanguageServer().start(newPort,code);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -56,6 +60,14 @@ public class MainServer {
                     }
                 });
                 serverThread.start();
+                Socket socketLang = new Socket(host.getHostName(), newPort);
+
+                System.out.println(info + "data sended on " + newPort + " port");
+                TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
+                ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
+                oos.writeObject(tr);
+                oos.close();
+                ois.close();
 
             }else if (cr.getLanguageCode().equals("de")) {
 
@@ -73,6 +85,16 @@ public class MainServer {
                 });
                 serverThread.start();
 
+                Socket socketLang = new Socket(host.getHostName(), newPort);
+
+                System.out.println(info + "data sended on " + newPort + " port");
+                TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
+                ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
+                oos.writeObject(tr);
+                oos.close();
+                ois.close();
+
+
             } else {
 
                 Socket socket_returnData = new Socket(host.getHostName(), cr.getPort());
@@ -82,17 +104,9 @@ public class MainServer {
                 objos.close();
 
                 if (socket_returnData.isBound()) {
+                    socket_returnData.close();
                 }
             }
-
-            Socket socketLang = new Socket(host.getHostName(), newPort);
-
-            System.out.println(info + "data sended on " + newPort + " port");
-            TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
-            ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
-            oos.writeObject(tr);
-            oos.close();
-            ois.close();
 
 
         }
