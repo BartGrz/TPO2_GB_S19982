@@ -17,24 +17,19 @@ import java.net.Socket;
 public class MainServer {
 
     private static ServerSocket serverSocket;
-    private static ServerSocket serverSocketReceived;
-    private static int port = 9876;
+    private static int port;
     public static int newPort = AvailablePort.findFreePort();
-    private static final String info = " SERVER MAIN :";
+    private static final String info = " [SERVER MAIN] :";
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        InetAddress host = InetAddress.getLocalHost();
 
+        InetAddress host = InetAddress.getLocalHost();
+        port = Integer.parseInt(args[0]);
+        serverSocket = new ServerSocket(port);
 
         while (true) {
 
-
             System.out.println(info + "waiting for Client request on port " + port);
-            try {
-                serverSocket = new ServerSocket(port);
-            } catch (BindException e) {
-
-            }
 
             Socket socket = serverSocket.accept();
 

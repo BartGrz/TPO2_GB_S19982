@@ -19,7 +19,7 @@ import java.net.*;
 public class Client extends Application   {
 
     private static ServerSocket serverSocketReceived;
-    public static final String info = "CLIENT : ";
+    public static final String info = " [CLIENT] :";
     public static ClientRequest cr;
     private static String data;
 
@@ -31,7 +31,7 @@ public class Client extends Application   {
     public static void main(String[] args) throws  IOException, ClassNotFoundException, InterruptedException {
 
         InetAddress host = InetAddress.getLocalHost();
-
+        int port = Integer.parseInt(args[0]);
         Thread guiThread = new Thread(() -> Application.launch(args));
 
         Socket socket = null;
@@ -57,7 +57,7 @@ public class Client extends Application   {
                 Thread.sleep(150);
             }
 
-            socket = new Socket(host.getHostName(), 9876);
+            socket = new Socket(host.getHostName(), port);
 
             oos = new ObjectOutputStream(socket.getOutputStream());
 
@@ -72,7 +72,7 @@ public class Client extends Application   {
 
             }
 //oczekuje na informacje zwrotna od serwera
-            System.out.println(info + " waiting for data on port : " + cr.getPort());
+            System.out.println(info + "waiting for data on port : " + cr.getPort());
 
                 serverSocketReceived = new ServerSocket(cr.getPort());
 
@@ -109,7 +109,7 @@ public class Client extends Application   {
             Label label_translated = new Label("Tlumaczenie : ");
             Label label_Translatedword = new Label();
             Label label_word = new Label("Wprowadz slowo do przetlumaczenia:");
-            Button button_confirm = new Button("Confirm");
+            Button button_confirm = new Button("OK");
 
             comboBox_langCode.getItems().addAll(lanCodes);
 
@@ -158,8 +158,6 @@ public class Client extends Application   {
                 label_Translatedword.setText(getDataReceived());
 
             });
-
-
 
         }
 
