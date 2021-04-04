@@ -19,11 +19,11 @@ public class FrLanguageServer extends LanguageServer  {
      * String translatedWord =  properties.getProperty(tr.getWordToTranslate());
      */
     @Override
-    public String getWordFromDictionary(TranslatingRequest tr) throws IOException {
+    public String getWordFromDictionary(String wordToTranslate) throws IOException {
 
         Properties properties = new Properties();
       properties.load(new FileInputStream("src/dictionary_fr.properties"));
-      String translatedWord =  properties.getProperty(tr.getWordToTranslate());
+      String translatedWord =  properties.getProperty(wordToTranslate);
 
         return translatedWord;
     }

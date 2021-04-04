@@ -1,6 +1,6 @@
 package zad1.languageServers;
 
-import zad1.holder.Translated;
+
 import zad1.holder.TranslatingRequest;
 
 import java.io.*;
@@ -13,6 +13,7 @@ public abstract class LanguageServer implements LanguageServerTemplate {
     private ServerSocket serverSocket;
     private final String info = " SERVER LANG : ";
     static TranslatingRequest tr = null;
+    String translatedWord;
 
     @Override
     public void start(int port ) throws IOException, ClassNotFoundException {
@@ -34,10 +35,11 @@ public abstract class LanguageServer implements LanguageServerTemplate {
 
 
             if(notFoundInDictionary()) {
-                tr.setWordToTranslate("not found in dictionary");
+             translatedWord = "not found in dictionary";
 
             }else {
-                tr.setWordToTranslate(getWordFromDictionary(tr));
+
+            translatedWord = getWordFromDictionary(tr.getWordToTranslate());
             }
 
             ois.close();
@@ -45,20 +47,17 @@ public abstract class LanguageServer implements LanguageServerTemplate {
 
         }
 
-        Translated translated = new Translated(tr.getWordToTranslate(), port);
-        System.out.println(info + " sendinfg data to " + tr.getPort() + " port ");
+        System.out.println(info + " sending data to " + tr.getPort() + " port ");
 
         //wysyla luamczenie do klienta
         while (true) {
+
             Socket returnInfo = new Socket(host.getHostName(), tr.getPort());
-
             ObjectOutputStream oos = new ObjectOutputStream(returnInfo.getOutputStream());
-
-            oos.writeObject(translated.getTranslatedWord());
+            oos.writeObject(translatedWord);
             oos.close();
             returnInfo.close();
             serverSocket.close();
-
 
             System.out.println(info + " : data send, shuting down");
 
@@ -74,15 +73,15 @@ public abstract class LanguageServer implements LanguageServerTemplate {
      * @Method template
      *         Properties properties = new Properties();
      *         properties.load(new FileInputStream("src/dictionary_languageCode( example fr).properties"));
-     *         String translatedWord =  properties.getProperty(tr.getWordToTranslate());
+     *         String translatedWord =  properties.getProperty(wordToTranslate);
      * @return translatedWord
      */
-    abstract public String getWordFromDictionary(TranslatingRequest tr) throws IOException;
+    abstract public String getWordFromDictionary(String wordToTranslate) throws IOException;
 
 
     private boolean notFoundInDictionary() throws IOException {
 
-        if (getWordFromDictionary(tr)==null) {
+        if (getWordFromDictionary(tr.getWordToTranslate())==null) {
 
             return true;
         }

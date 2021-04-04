@@ -41,7 +41,9 @@ public class Client extends Application   {
         setLangCode(null);
         setWord(null);
         setDataReceived(null);
+
 //wysyla objekt na serwer main
+
         while (true) {
 
             if (guiThread.isAlive()) {
@@ -52,7 +54,7 @@ public class Client extends Application   {
 
 
             while (getWord()==null && getLangCode()==null) {
-                Thread.sleep(500);
+                Thread.sleep(150);
             }
 
             socket = new Socket(host.getHostName(), 9876);
@@ -60,21 +62,20 @@ public class Client extends Application   {
             oos = new ObjectOutputStream(socket.getOutputStream());
 
 
-            cr = new ClientRequest(getWord(), getLangCode(), socket.getLocalPort(), host);
-            System.out.println(cr.toString());
+            cr = new ClientRequest(getWord(), getLangCode(), socket.getLocalPort());
+            cr.setHost(host);
             oos.writeObject(cr);
             oos.close();
+
             if (socket.isBound()) {
                 socket.close();
 
             }
 //oczekuje na informacje zwrotna od serwera
+            System.out.println(info + " waiting for data on port : " + cr.getPort());
 
-                try {
-                    serverSocketReceived = new ServerSocket(cr.getPort());
-                } catch (BindException e) {
-                    System.out.println(info + " ERROR ,EXC BIND");
-                }
+                serverSocketReceived = new ServerSocket(cr.getPort());
+
                 Socket socketReceived = serverSocketReceived.accept();
 
                 ObjectInputStream oiss = new ObjectInputStream(socketReceived.getInputStream());
@@ -82,35 +83,29 @@ public class Client extends Application   {
                 data = (String) oiss.readObject();
 
                 oiss.close();
-                //  System.out.println(info +" Data received from main server: " + data);
+
                 setDataReceived(data);
 
-
-                Thread.sleep(250);
+                Thread.sleep(150);
 
 
                 if (socketReceived.isBound()) {
                     socketReceived.close();
-
-
             }
 
             setWord(null);
             setLangCode(null);
-
             setDataReceived(null);
         }
 
     }
-   // }
         @Override
-        public void start (Stage primaryStage) throws Exception {
+        public void start (Stage primaryStage)   {
 
             Pane pane = new Pane();
             ComboBox comboBox_langCode = new ComboBox();
-            ObservableList<String> lanCodes = FXCollections.observableArrayList("ENG","FR","DE","ES");
+            ObservableList<String> lanCodes = FXCollections.observableArrayList("EN","FR","DE","ES","FIN");
             TextField textField = new TextField();
-            TextField textField_langcode = new TextField();
             Label label_translated = new Label("Tlumaczenie : ");
             Label label_Translatedword = new Label();
             Label label_word = new Label("Wprowadz slowo do przetlumaczenia:");
@@ -144,6 +139,7 @@ public class Client extends Application   {
 
 
             label_Translatedword.setText(getDataReceived());
+
             button_confirm.setOnAction(event -> {
 
                 word = textField.getText();
@@ -152,12 +148,9 @@ public class Client extends Application   {
                 setLangCode(langCode);
                 setWord(word);
 
-             //   System.out.println("word " + getWord() + " lang code " + getLangCode());
-             //
-
                 while(getDataReceived()==null) {
                     try {
-                        Thread.sleep(250);
+                        Thread.sleep(150);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

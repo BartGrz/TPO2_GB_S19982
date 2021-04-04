@@ -9,7 +9,7 @@ public class TranslatingRequest implements Serializable {
     private String wordToTranslate;
     private byte[] clientAdress;
 
-    public TranslatingRequest(int port, String wordToTranslate, byte[] clientAdress) {
+    public TranslatingRequest(String wordToTranslate,byte[] clientAdress,int port) {
         this.port = port;
         this.wordToTranslate = wordToTranslate;
         this.clientAdress = clientAdress;

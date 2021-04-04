@@ -10,15 +10,12 @@ public class DeLanguageServer extends LanguageServer {
 
 
     @Override
-    public String getWordFromDictionary(TranslatingRequest tr) throws IOException {
+    public String getWordFromDictionary(String wordToTranslate) throws IOException {
 
         Properties properties = new Properties();
         properties.load(new FileInputStream("src/dictionary_de.properties"));
-        String translatedWord =  properties.getProperty(tr.getWordToTranslate());
+        String translatedWord =  properties.getProperty(wordToTranslate);
 
-       // if(properties.getProperty(tr.getWordToTranslate())==null) {
-       //     return " word not found in dictionary";
-      //  }
 
         return translatedWord;
     }

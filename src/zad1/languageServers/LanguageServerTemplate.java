@@ -9,7 +9,7 @@ public interface LanguageServerTemplate {
     /**
      * Need to implement whole server logic
      * @param port = on this port client will be listening
-     *             after sending messeage server should shut down
+     *             after sending messeage, server should shut down
      * @throws IOException
      * @throws ClassNotFoundException
      */

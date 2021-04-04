@@ -2,12 +2,8 @@ package zad1;
 
 import zad1.holder.AvailablePort;
 import zad1.holder.ClientRequest;
-import zad1.holder.Translated;
 import zad1.holder.TranslatingRequest;
-import zad1.languageServers.DeLanguageServer;
-import zad1.languageServers.EngLanguageServer;
-import zad1.languageServers.EsLanguageServer;
-import zad1.languageServers.FrLanguageServer;
+import zad1.languageServers.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,7 +21,6 @@ public class MainServer {
     private static int port = 9876;
     public static int newPort = AvailablePort.findFreePort();
     private static final String info = " SERVER MAIN :";
-    private static Translated tran;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         InetAddress host = InetAddress.getLocalHost();
@@ -46,10 +41,11 @@ public class MainServer {
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             ClientRequest cr = null;
             cr = (ClientRequest) ois.readObject();
+            ois.close();
             System.out.println(info + " data received on " + port + " port");
 
 
-            if (cr.getLanguageCode().equals("eng")) {
+            if (cr.getLanguageCode().equals("en")) {
 
                 Thread serverThread = new Thread(() -> {
                     try {
@@ -111,7 +107,22 @@ public class MainServer {
 
                 serverThread.start();
                 sendToLangServ(cr, host.getHostName());
+            }else if (cr.getLanguageCode().equals("fin")) {
 
+
+                Thread serverThread = new Thread(() -> {
+                    try {
+                        new FinLanguageServer().start(newPort);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                serverThread.start();
+
+                sendToLangServ(cr, host.getHostName());
 
             } else {
 
@@ -135,11 +146,11 @@ public class MainServer {
 
         Socket socketLang = new Socket(hostName, newPort);
         System.out.println(info + "data sended on " + newPort + " port");
-        TranslatingRequest tr = new TranslatingRequest(cr.getPort(), cr.getWordToTranslate(), cr.getHost().getAddress());
+        TranslatingRequest tr = new TranslatingRequest(cr.getWordToTranslate(),cr.getHost().getAddress(),cr.getPort());
         ObjectOutputStream oos = new ObjectOutputStream(socketLang.getOutputStream());
         oos.writeObject(tr);
         oos.close();
-       // ois.close();
+
     }
 }
     /*
