@@ -11,18 +11,18 @@ import java.net.Socket;
 
 public abstract class LanguageServer implements LanguageServerTemplate {
     private ServerSocket serverSocket;
-    private final String info = " SERVER LANG : ";
+    private final String info = " [SERVER LANG] :";
     static TranslatingRequest tr = null;
     String translatedWord;
 
     @Override
     public void start(int port ) throws IOException, ClassNotFoundException {
+
         InetAddress host = InetAddress.getLocalHost();
 
-        System.out.println(info + " awaiting data on " + port + " port ");
-        try {
-            serverSocket = new ServerSocket(port);
+        System.out.println(info + "awaiting data on " + port + " port ");
 
+            serverSocket = new ServerSocket(port);
 
             // oczekuje na info od serwera glownego
             Socket socket = serverSocket.accept();
@@ -43,11 +43,9 @@ public abstract class LanguageServer implements LanguageServerTemplate {
             }
 
             ois.close();
-        } catch (BindException e) {
 
-        }
 
-        System.out.println(info + " sending data to " + tr.getPort() + " port ");
+        System.out.println(info + "sending data to " + tr.getPort() + " port ");
 
         //wysyla luamczenie do klienta
         while (true) {
@@ -59,7 +57,7 @@ public abstract class LanguageServer implements LanguageServerTemplate {
             returnInfo.close();
             serverSocket.close();
 
-            System.out.println(info + " : data send, shuting down");
+            System.out.println(info + "data send, shuting down");
 
             if (returnInfo.isBound()) {
 
