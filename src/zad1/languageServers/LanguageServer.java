@@ -35,8 +35,11 @@ public abstract class LanguageServer implements LanguageServerTemplate {
 
 
             if(notFoundInDictionary()) {
-             translatedWord = "not found in dictionary";
-
+                if(tr.getWordToTranslate().isEmpty()) {
+                    translatedWord = "Nie wprowadzono slowa do przetlumaczenia ";
+                }else {
+                    translatedWord = "nie znaleziono slowa " + tr.getWordToTranslate() + "  w slowniku ";
+                }
             }else {
 
             translatedWord = getWordFromDictionary(tr.getWordToTranslate());

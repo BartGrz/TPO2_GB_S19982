@@ -10,11 +10,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import lombok.Builder;
+import lombok.Data;
 import zad1.holder.ClientRequest;
 
 
 import java.io.*;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client extends Application   {
 
@@ -29,7 +33,7 @@ public class Client extends Application   {
 
 
     public static void main(String[] args) throws  IOException, ClassNotFoundException, InterruptedException {
-
+        Logger logger = Logger.getAnonymousLogger();
         InetAddress host = InetAddress.getLocalHost();
         int port = Integer.parseInt(args[0]);
         Thread guiThread = new Thread(() -> Application.launch(args));
@@ -49,6 +53,7 @@ public class Client extends Application   {
             if (guiThread.isAlive()) {
 
             } else {
+                logger.log(Level.FINEST," git ");
                   guiThread.start();
             }
 
@@ -131,26 +136,29 @@ public class Client extends Application   {
             button_confirm.setLayoutX(460);
             button_confirm.setLayoutY(40);
 
+        //    comboBox_langCode.setValue("EN");
+
             pane.getChildren().addAll(label_word, button_confirm, textField, comboBox_langCode,label_translated,label_Translatedword);
             Scene scene = new Scene(pane, 550, 200);
             primaryStage.setScene(scene);
             primaryStage.show();
 
-
-
             label_Translatedword.setText(getDataReceived());
 
             button_confirm.setOnAction(event -> {
 
-                word = textField.getText();
-                langCode = comboBox_langCode.getValue().toString().toLowerCase();
+                if(comboBox_langCode.getValue() ==null) {
+                    langCode = "";
+                }else {
 
-                setLangCode(langCode);
-                setWord(word);
+                    word = textField.getText();
+                    langCode = comboBox_langCode.getValue().toString().toLowerCase();
+                }
+                    setLangCode(langCode);
+                    setWord(word);
 
                 while(getDataReceived()==null) {
-                    try {
-                        Thread.sleep(150);
+                    try { Thread.sleep(150);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

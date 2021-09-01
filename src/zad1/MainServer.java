@@ -8,7 +8,6 @@ import zad1.languageServers.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -77,7 +76,7 @@ public class MainServer {
             }  else if (cr.getLanguageCode().equals("es")) {
                 Thread serverThread = new Thread(() -> {
                     try {
-                        new EsLanguageServer().start(newPort);
+                        new EsLanguageServerImplementation().start(newPort);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
@@ -124,14 +123,13 @@ public class MainServer {
                 Socket socket_returnData = new Socket(host.getHostName(), cr.getPort());
                 System.out.println(info + "I do not recognize language code , sending data to client  " + socket_returnData.getPort());
                 ObjectOutputStream objos = new ObjectOutputStream(socket_returnData.getOutputStream());
-                objos.writeObject("no data");
+                objos.writeObject("I do not recognize language code");
                 objos.close();
 
                 if (socket_returnData.isBound()) {
                     socket_returnData.close();
                 }
             }
-
 
         }
 
