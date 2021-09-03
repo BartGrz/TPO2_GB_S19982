@@ -115,9 +115,20 @@ public class MainServer {
                 });
 
                 serverThread.start();
-
                 sendToLangServ(cr, host.getHostName());
 
+            }  else if (cr.getLanguageCode().equals("no")) {
+                Thread serverThread = new Thread(() -> {
+                    try {
+                        new NoLanguageServer().start(newPort);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+                serverThread.start();
+                sendToLangServ(cr, host.getHostName());
             } else {
 
                 Socket socket_returnData = new Socket(host.getHostName(), cr.getPort());

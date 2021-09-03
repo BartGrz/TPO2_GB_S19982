@@ -3,6 +3,7 @@ package zad1.languageServers;
 import zad1.adapter.LanguageServerImplementation;
 
 import java.io.IOException;
+import java.util.Locale;
 
 public class EsLanguageServerImplementation extends LanguageServer implements LanguageServerImplementation {
 

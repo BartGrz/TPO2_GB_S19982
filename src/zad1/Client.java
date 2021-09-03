@@ -53,10 +53,8 @@ public class Client extends Application   {
             if (guiThread.isAlive()) {
 
             } else {
-                logger.log(Level.FINEST," git ");
                   guiThread.start();
             }
-
 
             while (getWord()==null && getLangCode()==null) {
                 Thread.sleep(150);
@@ -109,7 +107,7 @@ public class Client extends Application   {
 
             Pane pane = new Pane();
             ComboBox comboBox_langCode = new ComboBox();
-            ObservableList<String> lanCodes = FXCollections.observableArrayList("EN","FR","DE","ES","FIN");
+            ObservableList<String> lanCodes = FXCollections.observableArrayList("EN","FR","DE","ES","FIN","NO");
             TextField textField = new TextField();
             Label label_translated = new Label("Tlumaczenie : ");
             Label label_Translatedword = new Label();

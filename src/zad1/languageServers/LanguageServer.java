@@ -60,7 +60,7 @@ public abstract class LanguageServer implements LanguageServerTemplate {
             returnInfo.close();
             serverSocket.close();
 
-            System.out.println(info + "data send, shuting down");
+            System.out.println(info + "data send, shutting down");
 
             if (returnInfo.isBound()) {
 
