@@ -12,6 +12,7 @@
       <file value="file://$PROJECT_DIR$/src/dictionary_es.properties" />
       <file value="file://$PROJECT_DIR$/src/dictionary_fin.properties" />
       <file value="file://$PROJECT_DIR$/src/dictionary_fr.properties" />
+      <file value="file://$PROJECT_DIR$/src/dictionary_no.properties" />
       <base-name>dictionary</base-name>
     </custom-resource-bundle>
     <custom-resource-bundle>

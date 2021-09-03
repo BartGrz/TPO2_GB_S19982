@@ -4,7 +4,3 @@ es
 fin
 de
 no
-no
-no
-no.properties
-no.properties

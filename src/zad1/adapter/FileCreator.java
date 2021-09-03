@@ -15,10 +15,10 @@ public interface FileCreator extends LanguagesHandler {
      */
     default File createFile(String file_name) throws IOException {
         String[] language = file_name.split("_");
-        addNewLanguageToList(language[1]);
+        String [] language_short = language[1].split(".");
+        addNewLanguageToList(language_short[0]);
         File file = new File(dictionary_path, file_name);
         file.createNewFile();
         return file;
     }
-
 }
