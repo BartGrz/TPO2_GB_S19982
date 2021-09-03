@@ -9,6 +9,6 @@ public class EsLanguageServerImplementation extends LanguageServer implements La
 
     @Override
     public String getWordFromDictionary(String wordToTranslate ) throws IOException {
-        return getWord(wordToTranslate,LanguagesPossibele.ES);
+        return getWord(wordToTranslate, LanguagesPossible.ES);
     }
 }
