@@ -18,7 +18,7 @@ public interface FileHandler extends FileCreator {
      * @return
      * @throws IOException
      */
-    default boolean checkIfExists(String file_name) throws IOException {
+    private boolean checkIfExists(String file_name) throws IOException {
         Scanner scanner = new Scanner(file);
         while (scanner.hasNext()) {
             if (scanner.next().equals(file_name)) {

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * adding language shortcut to languageHandled.txt as info which languages are already handled by app
+ */
 public interface LanguagesHandler {
 
     String path = System.getProperty("user.home") + "\\Downloads\\TPO2_GB_S19982\\TPO2_GB_S19982\\Data\\languagesHandled.txt";
